@@ -27,7 +27,7 @@ except Exception:
     DOCX_AVAILABLE = False
 
 
-st.set_page_config(page_title="飞行员双盲测试评估分析", layout="wide")
+st.set_page_config(page_title="飞行员双盲测试评估分析（波音、C909、C919）", layout="wide")
 
 
 META_KEYWORDS = [
@@ -77,6 +77,19 @@ DEFAULT_COLOR_SEQUENCE = [
     "#00A3A3",
     "#828282",
 ]
+CAPTAIN_COLOR = "#27AE60"
+FIRST_OFFICER_COLOR = "#2F80ED"
+OVERALL_SCORE_COLOR = "#5DADE2"
+AVERAGE_LINE_COLOR = "#F2994A"
+
+# 科目颜色映射（蓝绿橙紫红）
+SUBJECT_COLORS = {
+    "科目一": "#2F80ED",  # 蓝色
+    "科目二": "#27AE60",  # 绿色
+    "科目三": "#F2994A",  # 橙色
+    "科目四": "#9B51E0",  # 紫色
+    "科目五": "#EB5757",  # 红色
+}
 
 
 def compact_text(value):
@@ -582,15 +595,146 @@ def figure_height(rows, minimum=420, per_row=30, maximum=900):
 
 
 def fig_score_distribution(df, title="测试人员平均得分分布"):
-    fig = px.histogram(
-        df,
-        x="最终得分",
-        nbins=18,
+    """显示每个飞行员的实际得分分布，按分数从低到高排列"""
+    if df.empty:
+        return None
+    
+    # 准备数据：按得分排序
+    plot_df = df.copy()
+    plot_df = plot_df.sort_values("最终得分", ascending=True).reset_index(drop=True)
+    plot_df["人员序号"] = plot_df.index + 1
+    
+    # 创建条形图显示每个飞行员的得分
+    fig = px.bar(
+        plot_df,
+        x="人员序号",
+        y="最终得分",
         title=title,
-        labels={"最终得分": "平均得分", "count": "人数"},
-        color_discrete_sequence=["#2F80ED"],
+        labels={"人员序号": "飞行员（按得分从低到高排列）", "最终得分": "平均得分"},
+        text=plot_df["最终得分"].map(lambda x: f"{x:.2f}"),
     )
-    fig.update_layout(height=400, bargap=0.05)
+    fig.update_traces(marker_color=OVERALL_SCORE_COLOR)
+    
+    # 添加参考线：平均分
+    avg_score = df["最终得分"].mean()
+    fig.add_hline(
+        y=avg_score, 
+        line_dash="dash", 
+        line_color=AVERAGE_LINE_COLOR,
+    )
+    fig.add_annotation(
+        x=1,
+        xref="paper",
+        y=avg_score,
+        yref="y",
+        text=f"平均分: {avg_score:.2f}",
+        showarrow=False,
+        xanchor="right",
+        yanchor="bottom",
+        yshift=8,
+        bgcolor="rgba(255,255,255,0.92)",
+        bordercolor=AVERAGE_LINE_COLOR,
+        borderwidth=1,
+        font=dict(color="#333333", size=12),
+    )
+    
+    fig.update_traces(
+        textposition="outside",
+        cliponaxis=False,
+        hovertemplate="<b>%{customdata}</b><br>得分: %{y:.2f}<extra></extra>",
+        customdata=plot_df["姓名"] if "姓名" in plot_df.columns else None
+    )
+    
+    # 设置y轴范围
+    y_min = max(0, plot_df["最终得分"].min() - 5)
+    y_max = min(105, max(plot_df["最终得分"].max(), avg_score) + 8)
+    
+    fig.update_layout(
+        height=430,
+        xaxis_title="飞行员（按得分从低到高排列）",
+        yaxis_title="平均得分",
+        yaxis=dict(
+            range=[y_min, y_max],
+            dtick=5
+        ),
+        margin=dict(l=40, r=40, t=50, b=60)
+    )
+    
+    return fig
+
+
+def fig_score_distribution_by_role(df, role_type="机长", color_scale=None):
+    """按角色（机长/副驾驶）显示分数分布"""
+    if df.empty:
+        return None
+    
+    # 筛选数据
+    role_df = df[df["操纵者"] == role_type].copy()
+    if role_df.empty:
+        return None
+    
+    # 按得分排序
+    role_df = role_df.sort_values("最终得分", ascending=True).reset_index(drop=True)
+    role_df["人员序号"] = role_df.index + 1
+    
+    role_color = CAPTAIN_COLOR if role_type == "机长" else FIRST_OFFICER_COLOR
+    
+    # 创建条形图
+    fig = px.bar(
+        role_df,
+        x="人员序号",
+        y="最终得分",
+        title=f"{role_type}分数分布",
+        labels={"人员序号": f"{role_type}（按得分从低到高排列）", "最终得分": "平均得分"},
+        text=role_df["最终得分"].map(lambda x: f"{x:.2f}"),
+    )
+    fig.update_traces(marker_color=role_color)
+    
+    # 添加平均分参考线
+    avg_score = role_df["最终得分"].mean()
+    fig.add_hline(
+        y=avg_score,
+        line_dash="dash",
+        line_color=AVERAGE_LINE_COLOR,
+    )
+    fig.add_annotation(
+        x=1,
+        xref="paper",
+        y=avg_score,
+        yref="y",
+        text=f"平均分: {avg_score:.2f}",
+        showarrow=False,
+        xanchor="right",
+        yanchor="bottom",
+        yshift=8,
+        bgcolor="rgba(255,255,255,0.92)",
+        bordercolor=AVERAGE_LINE_COLOR,
+        borderwidth=1,
+        font=dict(color="#333333", size=12),
+    )
+    
+    fig.update_traces(
+        textposition="outside",
+        cliponaxis=False,
+        hovertemplate="<b>%{customdata}</b><br>得分: %{y:.2f}<extra></extra>",
+        customdata=role_df["姓名"] if "姓名" in role_df.columns else None
+    )
+    
+    # 设置y轴范围
+    y_min = max(0, role_df["最终得分"].min() - 5)
+    y_max = min(105, max(role_df["最终得分"].max(), avg_score) + 8)
+    
+    fig.update_layout(
+        height=400,
+        xaxis_title=f"{role_type}（按得分从低到高排列）",
+        yaxis_title="平均得分",
+        yaxis=dict(
+            range=[y_min, y_max],
+            dtick=5
+        ),
+        margin=dict(l=40, r=40, t=60, b=50)
+    )
+    
     return fig
 
 
@@ -601,6 +745,12 @@ def fig_participants_by_company(pilot_df):
         .reset_index(name="人数")
         .sort_values(["所属单位", "操纵者"])
     )
+    # 绘图顺序用于堆叠：副驾驶先画在下方，机长后画在上方；图例再单独排序。
+    stack_order = ["副驾驶", "机长"]
+    legend_order = ["机长", "副驾驶"]
+    counts["操纵者"] = pd.Categorical(counts["操纵者"], categories=stack_order, ordered=True)
+    counts = counts.sort_values(["所属单位", "操纵者"])
+    
     fig = px.bar(
         counts,
         x="所属单位",
@@ -608,8 +758,11 @@ def fig_participants_by_company(pilot_df):
         color="操纵者",
         text="人数",
         title="参加测试人数（按单位与技术等级）",
-        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+        color_discrete_sequence=[FIRST_OFFICER_COLOR, CAPTAIN_COLOR],
+        category_orders={"操纵者": stack_order},
     )
+    for trace in fig.data:
+        trace.legendrank = legend_order.index(trace.name) + 1 if trace.name in legend_order else 99
     fig.update_traces(textposition="inside")
     fig.update_layout(height=430, barmode="stack", yaxis_title="人数")
     return fig
@@ -623,7 +776,7 @@ def fig_company_overall_scores(pilot_df):
         y="最终得分",
         text=stats["最终得分"].map(lambda x: f"{x:.1f}"),
         title="各航司整体平均得分",
-        color_discrete_sequence=["#27AE60"],
+        color_discrete_sequence=[OVERALL_SCORE_COLOR],
     )
     fig.update_traces(textposition="outside")
     fig.update_layout(height=430, yaxis_title="平均得分")
@@ -637,6 +790,11 @@ def fig_company_role_scores(pilot_df):
         .round(2)
         .reset_index()
     )
+    # 机长在左（绿色），副驾驶在右（蓝色）
+    role_order = ["机长", "副驾驶"]
+    stats["操纵者"] = pd.Categorical(stats["操纵者"], categories=role_order, ordered=True)
+    stats = stats.sort_values(["所属单位", "操纵者"])
+    
     fig = px.bar(
         stats,
         x="所属单位",
@@ -645,7 +803,8 @@ def fig_company_role_scores(pilot_df):
         text=stats["最终得分"].map(lambda x: f"{x:.1f}"),
         barmode="group",
         title="机长 / 副驾驶平均得分",
-        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+        color_discrete_sequence=[CAPTAIN_COLOR, FIRST_OFFICER_COLOR],
+        category_orders={"操纵者": role_order},
     )
     fig.update_traces(textposition="outside")
     fig.update_layout(height=430, yaxis_title="平均得分")
@@ -684,6 +843,12 @@ def fig_company_subject_loss(deductions, pilot_df):
     stats["科目排序"] = stats["科目编号"].map(SUBJECT_SORT_MAP)
     stats = stats.sort_values(["所属单位", "科目排序"])
     
+    # 图例顺序：科目一到科目五；绘图顺序反转以保证水平分组从上到下显示为科目一到科目五。
+    subject_order = [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]
+    plot_subject_order = list(reversed(subject_order))
+    subject_legend_rank = {name: idx + 1 for idx, name in enumerate(subject_order)}
+    subject_color_map = {f"{no}_{name}": SUBJECT_COLORS.get(no, "#828282") for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS}
+    
     # 创建水平条形图
     fig = px.bar(
         stats,
@@ -694,9 +859,11 @@ def fig_company_subject_loss(deductions, pilot_df):
         barmode="group",
         text=stats["人均失分"].map(lambda x: f"{x:.1f}"),
         title="各航司五个科目平均失分",
-        category_orders={"科目显示": [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]},
-        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+        category_orders={"科目显示": plot_subject_order},
+        color_discrete_sequence=[subject_color_map.get(name, "#828282") for name in plot_subject_order],
     )
+    for trace in fig.data:
+        trace.legendrank = subject_legend_rank.get(trace.name, 99)
     fig.update_traces(textposition="outside")
     fig.update_layout(
         height=figure_height(stats["所属单位"].nunique(), 430, 60),
@@ -792,6 +959,10 @@ def fig_subject_top3(deductions):
     top3["排序值"] = top3["总扣分值"].abs()
     plot_data = top3.sort_values(["科目排序", "排序值"], ascending=[True, True])
     
+    # 使用科目颜色
+    subject_order = [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]
+    color_map = {f"{no}_{name}": SUBJECT_COLORS.get(no, "#828282") for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS}
+    
     fig = px.bar(
         plot_data,
         y="图表标签",
@@ -802,9 +973,9 @@ def fig_subject_top3(deductions):
         title="各科目失分 TOP 3",
         category_orders={
             "图表标签": plot_data["图表标签"].tolist(),
-            "科目显示": [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS],
+            "科目显示": subject_order,
         },
-        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+        color_discrete_sequence=[color_map.get(s, "#828282") for s in subject_order],
     )
     fig.update_traces(
         textposition="outside", 
@@ -843,6 +1014,10 @@ def fig_subject_role_loss(subject_deductions, subject_no, all_items=None, roles=
             .reset_index()
         )
     roles = roles or sorted(subject_deductions["操纵者"].dropna().astype(str).unique().tolist())
+    # 确保机长在左，副驾驶在右
+    role_order = ["机长", "副驾驶"]
+    roles = [r for r in role_order if r in roles] + [r for r in roles if r not in role_order]
+    
     if all_items is not None and not all_items.empty:
         roles = roles or ["机长", "副驾驶"]
         base = all_items[["扣分项", "列顺序"]].drop_duplicates("扣分项")
@@ -861,24 +1036,32 @@ def fig_subject_role_loss(subject_deductions, subject_no, all_items=None, roles=
     data["排序值"] = data["总扣分值"].abs()
     item_order = data.groupby("扣分项")["列顺序"].min().sort_values().index.tolist()
     
+    # 确保操纵者顺序：机长在前，副驾驶在后
+    data["操纵者"] = pd.Categorical(data["操纵者"], categories=role_order, ordered=True)
+    data = data.sort_values(["扣分项", "操纵者"])
+    
     fig = px.bar(
         data,
         y="扣分项",
         x="排序值",
         color="操纵者",
         orientation="h",
-        category_orders={"扣分项": item_order},
+        category_orders={"扣分项": item_order, "操纵者": role_order},
         title=f"{subject_no} 按操纵者划分失分",
-        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+        color_discrete_sequence=[CAPTAIN_COLOR, FIRST_OFFICER_COLOR],
         text=data["总扣分值"].map(lambda x: f"{x:.0f}" if x != 0 else ""),
+        custom_data=["总扣分值"],
     )
     fig.update_traces(
         textposition="outside",
+        textangle=0,
+        constraintext="none",
         cliponaxis=False,
-        hovertemplate="<b>%{y}</b><br>扣分值: %{customdata:.0f}<extra></extra>",
-        customdata=data["总扣分值"]
+        hovertemplate="<b>%{y}</b><br>扣分值: %{customdata[0]:.0f}<extra></extra>",
     )
     x_max = data["排序值"].max()
+    if not np.isfinite(x_max) or x_max <= 0:
+        x_max = 1
     tick_vals = []
     tick_labels = []
     for v in range(0, int(x_max) + 1, max(1, int(x_max // 5))):
@@ -886,15 +1069,16 @@ def fig_subject_role_loss(subject_deductions, subject_no, all_items=None, roles=
         tick_labels.append(f"-{v}" if v > 0 else "0")
     fig.update_layout(
         height=figure_height(len(item_order), 430),
-        margin=dict(l=320, r=40, t=70, b=40),
+        margin=dict(l=320, r=100, t=70, b=40),
         xaxis_title="总扣分值",
         yaxis_title="",
         barmode="stack",
+        uniformtext=dict(mode="show", minsize=10),
         xaxis=dict(
             tickmode="array",
             tickvals=tick_vals,
             ticktext=tick_labels,
-            range=[0, x_max * 1.05]
+            range=[0, x_max * 1.25]
         )
     )
     return fig
@@ -1037,7 +1221,7 @@ def build_simple_report(pilot_df, company_df, weak_areas, deductions=None, subje
     return bio
 
 
-st.title("飞行员双盲测试评估分析平台")
+st.title("飞行员双盲测试评估分析平台（波音、C909、C919）")
 st.caption("得分按飞行员取检查员平均，扣分项按检查员原始记录统计。")
 
 with st.sidebar:
@@ -1116,7 +1300,24 @@ if uploaded_files:
         with score_col2:
             st.plotly_chart(fig_company_role_scores(filtered_pilots), use_container_width=True)
 
+        # 显示主图：所有飞行员的分数分布
         st.plotly_chart(fig_score_distribution(filtered_pilots), use_container_width=True)
+
+        # 显示机长和副驾驶的分数分布
+        if not filtered_pilots.empty:
+            role_col1, role_col2 = st.columns(2)
+            with role_col1:
+                fig_captain = fig_score_distribution_by_role(filtered_pilots, "机长")
+                if fig_captain:
+                    st.plotly_chart(fig_captain, use_container_width=True)
+                else:
+                    st.info("无机长数据")
+            with role_col2:
+                fig_first_officer = fig_score_distribution_by_role(filtered_pilots, "副驾驶")
+                if fig_first_officer:
+                    st.plotly_chart(fig_first_officer, use_container_width=True)
+                else:
+                    st.info("无副驾驶数据")
 
         st.markdown("#### 各单位得分统计")
         shown_company_df = company_stats(filtered_pilots)
