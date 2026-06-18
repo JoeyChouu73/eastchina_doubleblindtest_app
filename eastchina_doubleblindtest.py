@@ -58,6 +58,75 @@ SUBJECT_DEFS = [
 SUBJECT_ORDER = [item[0] for item in SUBJECT_DEFS]
 FLIGHT_SUBJECTS = SUBJECT_ORDER[:5]
 SUBJECT_SORT_MAP = {subject_no: idx for idx, subject_no in enumerate(SUBJECT_ORDER, start=1)}
+B737_RISK_LINES = """
+大坡度盘旋_进入和改出滚转速率_较明显停顿粗猛发力_飞机操纵RE16
+大坡度盘旋_进入和改出滚转速率_明显停顿或粗猛发力_飞机操纵RE16
+大坡度盘旋_坡度保持_偏差持续3s以上_飞机操纵RE16
+大坡度盘旋_速度偏差_5-10KT（含）_飞机操纵RE16
+大坡度盘旋_速度偏差_＞10KT_飞机操纵RE16
+大坡度盘旋_改出航向偏差_5-10°（含）_横向偏离MAC02
+大坡度盘旋_改出航向偏差_＞±10°_横向偏离MAC02
+大坡度盘旋_高度偏差_±60-80ft（含）_飞行高度突破MAC03
+大坡度盘旋_高度偏差_±80-100ft（含）_飞行高度突破MAC03
+大坡度盘旋_高度偏差_±100ft以上_飞行高度突破MAC03
+大侧风目视起落_着陆_曲线控制_飞机操纵RE16
+大侧风目视起落_着陆_中心线不在两主轮之间_横向偏离RE20
+大侧风目视起落_着陆_目测每偏差500ft_飞机操纵RE16
+大侧风目视起落_着陆_偏流≥5°_飞机操纵RE16
+大侧风目视起落_着陆_接地前抽杆_飞机操纵RE16
+大侧风目视起落_着陆_坡度≥5°_飞机操纵RE16
+大侧风目视起落_着陆_偏出大于半个跑道_横向偏离RE20
+大侧风目视起落_着陆_超出接地区_着陆距离长RE29
+大侧风目视起落_着陆_着陆弹跳_飞机操纵RE16
+大侧风目视起落_着陆_过早蹬舵（RA20ft以上）_飞机操纵RE16
+大侧风目视起落_着陆_明显过大的着陆载荷_飞机操纵RE16
+大侧风目视起落_下滑线_三红一白/三白一红_偏离下滑道下方CFIT04
+大侧风目视起落_下滑线_四白/四红_偏离下滑道下方CFIT04
+非精密进近+中断着陆_程序_单发推力控制_发动机故障LOC23
+非精密进近+中断着陆_SINK RATE_SINK RATE_进近阶段低能量状态/不稳定进近CFIT11
+非精密进近+中断着陆_BANK ANGLE/DON’T SINK_BANK ANGLE/DON’T SINK_飞机操纵RE16
+非精密进近+中断着陆_稳定进近_1000ft未稳定进近_不稳定进近RE26
+非精密进近+中断着陆_五边速度控制_±5-±10KT（含）_着陆时能量过高RE32
+非精密进近+中断着陆_五边速度控制_＞10KT_着陆时能量过高RE32
+非精密进近+中断着陆_入口高度_相差每10ft_跑道入口处能量过高RE27
+非精密进近+中断着陆_横侧控制_100ft以下超出跑道边线（含）_横向偏离RE20
+非精密进近+中断着陆_中断程序_程序错误_复飞RE31
+非精密进近+中断着陆_中断动作_接地_复飞RE31
+非精密进近+中断着陆_中断动作_不合理使用推力_复飞RE31
+非精密进近+中断着陆_中断动作_接地载荷大_复飞RE31
+非精密进近+中断着陆_滑跑方向_不稳定_横向偏离RE20
+非精密进近+中断着陆_一边航迹_≥3°_横向偏离MAC02
+非精密进近+中断着陆_下滑线_三红一白/三白一红_偏离下滑道下方CFIT04
+非精密进近+中断着陆_下滑线_四白/四红_偏离下滑道下方CFIT04
+非精密进近+中断着陆_高距比_是否参考原始数据_错误下降点CFIT07
+中断着陆后发动机失效_航迹误差_±5°-±10°（含）_横向偏离MAC02
+中断着陆后发动机失效_航迹误差_＞±10°_横向偏离MAC02
+中断着陆后发动机失效_坡度_≥5°_飞机操纵RE16
+中断着陆后发动机失效_坡度_≥10°_飞机操纵RE16
+中断着陆后发动机失效_通信_没有宣布“PANPAN”_发动机故障LOC23
+中断着陆后发动机失效_程序_速度：＜Vref ＞Vref+20_发动机故障LOC23
+中断着陆后发动机失效_程序_单发初始姿态控制_发动机故障LOC23
+中断着陆后发动机失效_程序_单发推力控制_发动机故障LOC23
+单发ILS无指引落地_入口高度_相差每10ft_跑道入口处能量过高RE27
+单发ILS无指引落地_SINK RATE_SINK RATE_进近阶段低能量状态/不稳定进近CFIT11
+单发ILS无指引落地_速度控制_Vapp：±5-±10KT（含）_着陆时能量过高RE32
+单发ILS无指引落地_速度控制_Vapp：＞±10KT_着陆时能量过高RE32
+单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_G/S 每半个点_不稳定进近RE26
+单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_LOC 每半个点_不稳定进近RE26
+单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_100ft以下超出跑道边线（含）_横向偏离RE20
+单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_1000ft未稳定进近_不稳定进近RE26
+单发ILS无指引落地_着陆_曲线控制_飞机操纵RE16
+单发ILS无指引落地_着陆_中心线不在两个主轮之间_横向偏离RE20
+单发ILS无指引落地_着陆_目测每偏差500ft_飞机操纵RE16
+单发ILS无指引落地_着陆_偏出大于半个跑道_横向偏离RE20
+单发ILS无指引落地_着陆_偏流≥5°_飞机操纵RE16
+单发ILS无指引落地_着陆_坡度≥5°_飞机操纵RE16
+单发ILS无指引落地_着陆_接地前抽杆_飞机操纵RE16
+单发ILS无指引落地_着陆_超出接地区_着陆距离长RE29
+单发ILS无指引落地_着陆_明显过大的着陆载荷_飞机操纵RE16
+单发ILS无指引落地_着陆_过早蹬舵_飞机操纵RE16
+单发ILS无指引落地_着陆_着陆弹跳_飞机操纵RE16
+""".strip().splitlines()
 SUBJECT_START_ITEMS = OrderedDict(
     [
         ("高度偏差", ("科目一", "大坡度盘旋")),
@@ -103,6 +172,37 @@ def compact_text(value):
 
 def key_text(value):
     return re.sub(r"\s+", "", compact_text(value))
+
+
+def build_b737_risk_maps():
+    subject_to_no = {name: no for no, name in SUBJECT_DEFS}
+    exact_map = {}
+    item_map = {}
+    for line in B737_RISK_LINES:
+        parts = line.split("_")
+        if len(parts) < 4:
+            continue
+        subject_name, scoring_item, standard = parts[:3]
+        risk = "_".join(parts[3:])
+        subject_no = subject_to_no.get(subject_name, subject_name)
+        exact_map[(subject_no, key_text(scoring_item), key_text(standard))] = risk
+        item_map.setdefault((subject_no, key_text(scoring_item)), risk)
+    return exact_map, item_map
+
+
+B737_RISK_STANDARD_MAP, B737_RISK_ITEM_MAP = build_b737_risk_maps()
+
+
+def risk_name_for_standard(subject_no, scoring_item, standard, fallback=""):
+    subject_no = compact_text(subject_no)
+    item_key = key_text(scoring_item)
+    standard_key = key_text(standard)
+    return (
+        B737_RISK_STANDARD_MAP.get((subject_no, item_key, standard_key))
+        or B737_RISK_ITEM_MAP.get((subject_no, item_key))
+        or fallback
+        or ""
+    )
 
 
 def to_number(value):
@@ -473,6 +573,7 @@ def prepare_analysis(raw_data, col_meta, deduction_cols):
                     "评分项目": meta.get("评分项目", ""),
                     "扣分标准": meta.get("扣分标准", ""),
                     "扣分项": meta.get("扣分项", col),
+                    "模板列": col,
                     "列顺序": meta.get("列顺序", 9999),
                     "标准分值": meta.get("标准分值", np.nan),
                     "扣分值": float(val),
@@ -492,7 +593,7 @@ def prepare_analysis(raw_data, col_meta, deduction_cols):
 
 def all_deduction_items(col_meta, subject_no=None):
     rows = []
-    for meta in col_meta.values():
+    for col, meta in col_meta.items():
         item_subject = meta.get("科目编号", "")
         if not item_subject:
             continue
@@ -504,13 +605,17 @@ def all_deduction_items(col_meta, subject_no=None):
                 "科目编号": item_subject,
                 "科目排序": meta.get("科目排序", subject_sort_value(item_subject)),
                 "列顺序": meta.get("列顺序", 9999),
+                "评分项目": meta.get("评分项目", ""),
+                "扣分标准": meta.get("扣分标准", ""),
+                "标准分值": meta.get("标准分值", np.nan),
+                "模板列": col,
             }
         )
     if not rows:
-        return pd.DataFrame(columns=["扣分项", "科目编号", "科目排序", "列顺序"])
+        return pd.DataFrame(columns=["扣分项", "科目编号", "科目排序", "列顺序", "评分项目", "扣分标准", "标准分值", "模板列"])
     return (
         pd.DataFrame(rows)
-        .drop_duplicates(subset=["扣分项"])
+        .drop_duplicates(subset=["模板列"])
         .sort_values(["科目排序", "列顺序"])
         .reset_index(drop=True)
     )
@@ -576,6 +681,16 @@ def company_stats(pilot_df):
         .round(2)
         .reset_index()
         .rename(columns={"所属单位": "单位名称"})
+    )
+
+
+def company_test_counts(pilot_df):
+    if pilot_df.empty:
+        return pd.DataFrame(columns=["所属单位", "测试人数"])
+    return (
+        pilot_df.groupby("所属单位", dropna=False)["人员ID"]
+        .nunique()
+        .reset_index(name="测试人数")
     )
 
 
@@ -770,6 +885,7 @@ def fig_participants_by_company(pilot_df):
 
 def fig_company_overall_scores(pilot_df):
     stats = pilot_df.groupby("所属单位", dropna=False)["最终得分"].mean().round(2).reset_index()
+    avg_score = pilot_df["最终得分"].mean()
     fig = px.bar(
         stats,
         x="所属单位",
@@ -778,8 +894,29 @@ def fig_company_overall_scores(pilot_df):
         title="各航司整体平均得分",
         color_discrete_sequence=[OVERALL_SCORE_COLOR],
     )
+    fig.add_hline(
+        y=avg_score,
+        line_dash="dash",
+        line_color=AVERAGE_LINE_COLOR,
+    )
+    fig.add_annotation(
+        x=1,
+        xref="paper",
+        y=avg_score,
+        yref="y",
+        text=f"平均分: {avg_score:.2f}",
+        showarrow=False,
+        xanchor="right",
+        yanchor="bottom",
+        yshift=8,
+        bgcolor="rgba(255,255,255,0.92)",
+        bordercolor=AVERAGE_LINE_COLOR,
+        borderwidth=1,
+        font=dict(color="#333333", size=12),
+    )
     fig.update_traces(textposition="outside")
-    fig.update_layout(height=430, yaxis_title="平均得分")
+    y_max = min(105, max(stats["最终得分"].max(), avg_score) + 8)
+    fig.update_layout(height=430, yaxis_title="平均得分", yaxis=dict(range=[0, y_max]))
     return fig
 
 
@@ -820,9 +957,8 @@ def fig_company_subject_loss(deductions, pilot_df):
     if deductions.empty or pilot_df.empty:
         return None
     
-    # 获取每个航司的测试人数（按飞行员去重）
-    company_people_count = pilot_df.groupby("所属单位")["人员ID"].nunique().reset_index()
-    company_people_count.columns = ["所属单位", "测试人数"]
+    # 获取每个航司的数据文件受测人数（按飞行员去重）
+    company_people_count = company_test_counts(pilot_df)
     
     # 计算每个航司每个科目的总失分
     subject_loss_by_company = (
@@ -834,7 +970,7 @@ def fig_company_subject_loss(deductions, pilot_df):
     
     # 合并计算人均失分
     stats = subject_loss_by_company.merge(company_people_count, on="所属单位", how="left")
-    stats["人均失分"] = (stats["总失分"] / stats["测试人数"]).round(2)
+    stats["人均失分"] = (stats["总失分"] / stats["测试人数"].replace(0, np.nan)).fillna(0).round(2)
     
     # 添加科目显示名称（科目编号_科目名称）
     stats["科目显示"] = stats["科目编号"] + "_" + stats["科目名称"]
@@ -857,7 +993,7 @@ def fig_company_subject_loss(deductions, pilot_df):
         color="科目显示",
         orientation="h",
         barmode="group",
-        text=stats["人均失分"].map(lambda x: f"{x:.1f}"),
+        text=stats["人均失分"].map(lambda x: f"-{x:.1f}" if x != 0 else ""),
         title="各航司五个科目平均失分",
         category_orders={"科目显示": plot_subject_order},
         color_discrete_sequence=[subject_color_map.get(name, "#828282") for name in plot_subject_order],
@@ -869,6 +1005,253 @@ def fig_company_subject_loss(deductions, pilot_df):
         height=figure_height(stats["所属单位"].nunique(), 430, 60),
         xaxis_title="人均失分",
         yaxis_title=""
+    )
+    return fig
+
+
+def subject_company_loss_stats(deductions, pilot_df):
+    if deductions.empty or pilot_df.empty:
+        return pd.DataFrame()
+
+    company_people_count = company_test_counts(pilot_df)
+    stats = (
+        deductions[deductions["科目编号"].isin(FLIGHT_SUBJECTS)]
+        .groupby(["所属单位", "科目编号", "科目名称"], dropna=False)
+        .agg(总失分=("失分", "sum"))
+        .reset_index()
+        .merge(company_people_count, on="所属单位", how="left")
+    )
+    if stats.empty:
+        return stats
+    stats["人均失分"] = (stats["总失分"] / stats["测试人数"].replace(0, np.nan)).fillna(0).round(2)
+    stats["科目显示"] = stats["科目编号"] + "_" + stats["科目名称"]
+    stats["科目排序"] = stats["科目编号"].map(SUBJECT_SORT_MAP)
+    return stats.sort_values(["科目排序", "所属单位"])
+
+
+def fig_subject_company_comparison(deductions, pilot_df):
+    stats = subject_company_loss_stats(deductions, pilot_df)
+    if stats.empty:
+        return None
+
+    subject_order = [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]
+    fig = px.bar(
+        stats,
+        x="科目显示",
+        y="人均失分",
+        color="所属单位",
+        barmode="group",
+        text=stats["人均失分"].map(lambda x: f"-{x:.2f}" if x != 0 else ""),
+        title="各科目各航司人均扣分值对比",
+        category_orders={"科目显示": subject_order},
+        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+    )
+    fig.update_traces(textposition="outside", cliponaxis=False)
+    fig.update_layout(
+        height=500,
+        xaxis_title="科目",
+        yaxis_title="人均扣分值",
+        yaxis=dict(tickprefix="-"),
+        margin=dict(l=60, r=60, t=80, b=80),
+    )
+    return fig
+
+
+def build_subject_standard_company_stats(subject_deductions, pilot_df, all_items):
+    if pilot_df.empty or all_items is None or all_items.empty:
+        return pd.DataFrame()
+
+    company_people_count = company_test_counts(pilot_df)
+    companies = company_people_count["所属单位"].dropna().astype(str).tolist()
+    base_cols = ["扣分项", "评分项目", "扣分标准", "列顺序", "标准分值"]
+    join_key = "模板列" if "模板列" in all_items.columns else "扣分项"
+    if join_key == "模板列":
+        base_cols.append("模板列")
+    base = all_items[base_cols].drop_duplicates(join_key)
+    base = base.merge(pd.DataFrame({"所属单位": companies}), how="cross")
+
+    if subject_deductions.empty:
+        grouped = pd.DataFrame(columns=["所属单位", join_key, "总失分"])
+    else:
+        group_cols = ["所属单位", join_key] if join_key in subject_deductions.columns else ["所属单位", "扣分项"]
+        grouped = (
+            subject_deductions.groupby(group_cols, dropna=False)
+            .agg(总失分=("失分", "sum"))
+            .reset_index()
+        )
+
+    stats = (
+        base.merge(grouped, on=["所属单位", join_key], how="left")
+        .merge(company_people_count, on="所属单位", how="left")
+    )
+    stats["总失分"] = stats["总失分"].fillna(0)
+    stats["人均失分"] = (stats["总失分"] / stats["测试人数"].replace(0, np.nan)).fillna(0)
+    stats["显示扣分值"] = stats["人均失分"].map(lambda x: f"-{x:.2f}" if x != 0 else "")
+    return stats.sort_values(["列顺序", "所属单位"])
+
+
+def fig_subject_standard_company_loss(subject_deductions, pilot_df, all_items, scoring_item):
+    stats = build_subject_standard_company_stats(subject_deductions, pilot_df, all_items)
+    if stats.empty:
+        return None
+
+    plot_data = stats[stats["评分项目"] == scoring_item].copy()
+    if plot_data.empty or plot_data["人均失分"].sum() <= 0:
+        return None
+
+    standard_order = (
+        plot_data[["扣分标准", "列顺序"]]
+        .drop_duplicates()
+        .sort_values("列顺序")["扣分标准"]
+        .tolist()
+    )
+    fig = px.bar(
+        plot_data,
+        x="扣分标准",
+        y="人均失分",
+        color="所属单位",
+        barmode="group",
+        text="显示扣分值",
+        title=f"{scoring_item} 各标准航司人均扣分值",
+        category_orders={"扣分标准": standard_order},
+        color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
+    )
+    fig.update_traces(textposition="outside", cliponaxis=False)
+    fig.update_layout(
+        height=430,
+        xaxis_title=scoring_item,
+        yaxis_title="人均扣分值",
+        yaxis=dict(tickprefix="-"),
+        margin=dict(l=60, r=60, t=80, b=80),
+    )
+    return fig
+
+
+def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_name, all_items):
+    if pilot_df.empty or all_items is None or all_items.empty:
+        return None
+
+    base_cols = ["扣分项", "评分项目", "扣分标准", "列顺序", "标准分值"]
+    join_key = "模板列" if "模板列" in all_items.columns else "扣分项"
+    if join_key == "模板列":
+        base_cols.append("模板列")
+    base_items = all_items[base_cols].drop_duplicates(join_key).copy()
+    base_items["分数权重"] = pd.to_numeric(base_items["标准分值"], errors="coerce").abs().fillna(0)
+    max_weight = base_items["分数权重"].max()
+    if not np.isfinite(max_weight) or max_weight <= 0:
+        return None
+    base_items["对应风险"] = base_items.apply(
+        lambda row: risk_name_for_standard(
+            subject_no,
+            row.get("评分项目", ""),
+            row.get("扣分标准", ""),
+            row.get("扣分项", ""),
+        ),
+        axis=1,
+    )
+    base_items["风险标签"] = (
+        base_items["评分项目"].astype(str)
+        + "_"
+        + base_items["扣分标准"].astype(str)
+        + "_"
+        + base_items["对应风险"].astype(str)
+    )
+
+    company_eval_count = (
+        pilot_df.groupby("所属单位", dropna=False)
+        .agg(评估数据数=("评分人数", "sum"))
+        .reset_index()
+    )
+    company_eval_count["评估数据数"] = company_eval_count["评估数据数"].replace(0, np.nan)
+    companies = company_eval_count["所属单位"].dropna().astype(str).tolist()
+
+    base = base_items.merge(pd.DataFrame({"所属单位": companies}), how="cross")
+    if subject_deductions.empty:
+        counts = pd.DataFrame(columns=["所属单位", join_key, "计分次数"])
+    else:
+        count_data = subject_deductions.copy()
+        count_data["分数权重"] = pd.to_numeric(count_data["标准分值"], errors="coerce").abs().fillna(0)
+        count_data["计分次数"] = np.where(
+            count_data["分数权重"] > 0,
+            pd.to_numeric(count_data["扣分值"], errors="coerce").abs() / count_data["分数权重"],
+            1,
+        )
+        group_cols = ["所属单位", join_key] if join_key in count_data.columns else ["所属单位", "扣分项"]
+        counts = (
+            count_data.groupby(group_cols, dropna=False)
+            .agg(计分次数=("计分次数", "sum"))
+            .reset_index()
+        )
+
+    stats = (
+        base.merge(counts, on=["所属单位", join_key], how="left")
+        .merge(company_eval_count, on="所属单位", how="left")
+    )
+    stats["计分次数"] = stats["计分次数"].fillna(0)
+    stats["风险值"] = (
+        stats["分数权重"]
+        * stats["计分次数"]
+        * (stats["分数权重"] / (max_weight + (max_weight - stats["分数权重"])))
+        / stats["评估数据数"]
+    ).fillna(0)
+
+    risk_avg = (
+        stats.groupby([join_key, "扣分项", "评分项目", "扣分标准", "对应风险", "风险标签", "列顺序", "分数权重"], dropna=False)
+        .agg(计分次数=("计分次数", "sum"), 评估数据数=("评估数据数", "sum"))
+        .reset_index()
+    )
+    risk_avg["风险值"] = (
+        risk_avg["分数权重"]
+        * risk_avg["计分次数"]
+        * (risk_avg["分数权重"] / (max_weight + (max_weight - risk_avg["分数权重"])))
+        / risk_avg["评估数据数"].replace(0, np.nan)
+    ).fillna(0)
+    risk_avg["所属单位"] = "平权风险值"
+    plot_data = pd.concat(
+        [
+            stats[["所属单位", "扣分项", "评分项目", "扣分标准", "对应风险", "风险标签", "列顺序", "计分次数", "评估数据数", "风险值"]],
+            risk_avg[["所属单位", "扣分项", "评分项目", "扣分标准", "对应风险", "风险标签", "列顺序", "计分次数", "评估数据数", "风险值"]],
+        ],
+        ignore_index=True,
+    )
+    if plot_data["风险值"].sum() <= 0:
+        return None
+
+    label_order = base_items.sort_values("列顺序")["风险标签"].tolist()
+    color_sequence = DEFAULT_COLOR_SEQUENCE + ["#1F7A3A"]
+    fig = px.bar(
+        plot_data,
+        y="风险标签",
+        x="风险值",
+        color="所属单位",
+        orientation="h",
+        barmode="group",
+        title=f"{subject_name}风险值分布一览图",
+        category_orders={"风险标签": label_order},
+        color_discrete_sequence=color_sequence,
+        color_discrete_map={"平权风险值": "#1F7A3A"},
+        custom_data=["评分项目", "扣分标准", "对应风险", "计分次数", "评估数据数"],
+    )
+    for trace in fig.data:
+        if trace.name == "平权风险值":
+            trace.marker.color = "#1F7A3A"
+            trace.legendrank = 99
+    fig.update_traces(
+        hovertemplate=(
+            "<b>%{customdata[0]}</b><br>"
+            "扣分标准: %{customdata[1]}<br>"
+            "对应风险: %{customdata[2]}<br>"
+            "计分次数: %{customdata[3]:.2f}<br>"
+            "评估数据数: %{customdata[4]:.0f}<br>"
+            "风险值: %{x:.4f}<extra></extra>"
+        )
+    )
+    fig.update_layout(
+        height=figure_height(len(label_order), 520, 24, 1500),
+        margin=dict(l=360, r=60, t=80, b=50),
+        xaxis_title="风险值",
+        yaxis_title="",
+        yaxis=dict(tickfont=dict(color="#28A86B", size=11)),
     )
     return fig
 
@@ -1332,8 +1715,14 @@ if uploaded_files:
             if fig:
                 st.plotly_chart(fig, use_container_width=True)
 
+            st.markdown("#### 各科目各航司人均扣分值对比")
+            fig = fig_subject_company_comparison(filtered_deductions, filtered_pilots)
+            if fig:
+                st.plotly_chart(fig, use_container_width=True)
+
             st.markdown("#### 失分 TOP 5 扣分项统计")
-            top_items = identify_weak_areas(filtered_deductions, ["扣分项"], denominator=len(raw_data))
+            flight_deductions = filtered_deductions[filtered_deductions["科目编号"].isin(FLIGHT_SUBJECTS)].copy()
+            top_items = identify_weak_areas(flight_deductions, ["扣分项"], denominator=len(raw_data))
             fig = fig_loss_items_bar(top_items, "总扣分值排名前 5 的扣分项", top_n=5)
             if fig:
                 st.plotly_chart(fig, use_container_width=True)
@@ -1355,7 +1744,7 @@ if uploaded_files:
                         st.info("该科目暂无扣分记录。")
                         continue
 
-                    inner_tab1, inner_tab2, inner_tab3 = st.tabs(["整体分析", "按操纵者划分", "各航司失分情况"])
+                    inner_tab1, inner_tab2, inner_tab3, inner_tab4 = st.tabs(["整体分析", "按操纵者划分", "各航司失分情况", "风险值分析"])
 
                     with inner_tab1:
                         item_loss = aggregate_loss_by_item(
@@ -1367,6 +1756,27 @@ if uploaded_files:
                         fig = fig_loss_items_bar(item_loss, f"{subject_no} 全部评分项目及扣分项总扣分值")
                         if fig:
                             st.plotly_chart(fig, use_container_width=True)
+                        if not subject_all_items.empty and "评分项目" in subject_all_items.columns:
+                            st.markdown("##### 各评分项目下扣分标准航司人均扣分值")
+                            scoring_items = (
+                                subject_all_items[["评分项目", "列顺序"]]
+                                .drop_duplicates("评分项目")
+                                .sort_values("列顺序")["评分项目"]
+                                .tolist()
+                            )
+                            shown_standard_chart = False
+                            for scoring_item in scoring_items:
+                                fig = fig_subject_standard_company_loss(
+                                    subject_deductions,
+                                    filtered_pilots,
+                                    subject_all_items,
+                                    scoring_item,
+                                )
+                                if fig:
+                                    st.plotly_chart(fig, use_container_width=True)
+                                    shown_standard_chart = True
+                            if not shown_standard_chart:
+                                st.info("该科目暂无可绘制的标准扣分数据。")
                         st.dataframe(display_loss_table(item_loss), use_container_width=True, hide_index=True)
 
                     with inner_tab2:
@@ -1387,6 +1797,19 @@ if uploaded_files:
                             fig = fig_loss_items_bar(company_loss, f"{company} - {subject_no} 总扣分值")
                             if fig:
                                 st.plotly_chart(fig, use_container_width=True)
+
+                    with inner_tab4:
+                        fig = fig_subject_risk_analysis(
+                            subject_deductions,
+                            filtered_pilots,
+                            subject_no,
+                            subject_name,
+                            subject_all_items,
+                        )
+                        if fig:
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.info("该科目暂无可绘制的风险值数据。")
 
             st.markdown("#### 综合考评得分分析")
             fig = fig_comprehensive_score_pie(filtered_deductions)
