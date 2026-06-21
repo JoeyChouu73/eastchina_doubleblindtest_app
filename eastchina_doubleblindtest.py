@@ -1675,16 +1675,32 @@ if uploaded_files:
         col3.metric("最高分", f"{filtered_pilots['最终得分'].max():.1f}")
         col4.metric("最低分", f"{filtered_pilots['最终得分'].min():.1f}")
 
-        st.plotly_chart(fig_participants_by_company(filtered_pilots), use_container_width=True)
+        st.plotly_chart(
+            fig_participants_by_company(filtered_pilots),
+            use_container_width=True,
+            key="participants_by_company",
+        )
 
         score_col1, score_col2 = st.columns(2)
         with score_col1:
-            st.plotly_chart(fig_company_overall_scores(filtered_pilots), use_container_width=True)
+            st.plotly_chart(
+                fig_company_overall_scores(filtered_pilots),
+                use_container_width=True,
+                key="company_overall_scores",
+            )
         with score_col2:
-            st.plotly_chart(fig_company_role_scores(filtered_pilots), use_container_width=True)
+            st.plotly_chart(
+                fig_company_role_scores(filtered_pilots),
+                use_container_width=True,
+                key="company_role_scores",
+            )
 
         # 显示主图：所有飞行员的分数分布
-        st.plotly_chart(fig_score_distribution(filtered_pilots), use_container_width=True)
+        st.plotly_chart(
+            fig_score_distribution(filtered_pilots),
+            use_container_width=True,
+            key="score_distribution_overall",
+        )
 
         # 显示机长和副驾驶的分数分布
         if not filtered_pilots.empty:
@@ -1692,13 +1708,21 @@ if uploaded_files:
             with role_col1:
                 fig_captain = fig_score_distribution_by_role(filtered_pilots, "机长")
                 if fig_captain:
-                    st.plotly_chart(fig_captain, use_container_width=True)
+                    st.plotly_chart(
+                        fig_captain,
+                        use_container_width=True,
+                        key="score_distribution_captain",
+                    )
                 else:
                     st.info("无机长数据")
             with role_col2:
                 fig_first_officer = fig_score_distribution_by_role(filtered_pilots, "副驾驶")
                 if fig_first_officer:
-                    st.plotly_chart(fig_first_officer, use_container_width=True)
+                    st.plotly_chart(
+                        fig_first_officer,
+                        use_container_width=True,
+                        key="score_distribution_first_officer",
+                    )
                 else:
                     st.info("无副驾驶数据")
 
@@ -1713,25 +1737,25 @@ if uploaded_files:
             st.markdown("#### 各航司平均失分统计")
             fig = fig_company_subject_loss(filtered_deductions, filtered_pilots)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="company_subject_loss")
 
             st.markdown("#### 各科目各航司人均扣分值对比")
             fig = fig_subject_company_comparison(filtered_deductions, filtered_pilots)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="subject_company_comparison")
 
             st.markdown("#### 失分 TOP 5 扣分项统计")
             flight_deductions = filtered_deductions[filtered_deductions["科目编号"].isin(FLIGHT_SUBJECTS)].copy()
             top_items = identify_weak_areas(flight_deductions, ["扣分项"], denominator=len(raw_data))
             fig = fig_loss_items_bar(top_items, "总扣分值排名前 5 的扣分项", top_n=5)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="top5_loss_items")
             st.dataframe(display_loss_table(top_items.head(5)), use_container_width=True, hide_index=True)
 
             st.markdown("#### 各科目失分 TOP 3 统计")
             fig, top3 = fig_subject_top3(filtered_deductions)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="subject_top3")
                 st.dataframe(display_loss_table(top3), use_container_width=True, hide_index=True)
 
             st.markdown("#### 各科目分析")
@@ -1755,7 +1779,11 @@ if uploaded_files:
                         )
                         fig = fig_loss_items_bar(item_loss, f"{subject_no} 全部评分项目及扣分项总扣分值")
                         if fig:
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(
+                                fig,
+                                use_container_width=True,
+                                key=f"subject_overall_loss_{subject_no}",
+                            )
                         if not subject_all_items.empty and "评分项目" in subject_all_items.columns:
                             st.markdown("##### 各评分项目下扣分标准航司人均扣分值")
                             scoring_items = (
@@ -1765,7 +1793,7 @@ if uploaded_files:
                                 .tolist()
                             )
                             shown_standard_chart = False
-                            for scoring_item in scoring_items:
+                            for scoring_idx, scoring_item in enumerate(scoring_items):
                                 fig = fig_subject_standard_company_loss(
                                     subject_deductions,
                                     filtered_pilots,
@@ -1773,7 +1801,11 @@ if uploaded_files:
                                     scoring_item,
                                 )
                                 if fig:
-                                    st.plotly_chart(fig, use_container_width=True)
+                                    st.plotly_chart(
+                                        fig,
+                                        use_container_width=True,
+                                        key=f"standard_company_loss_{subject_no}_{scoring_idx}",
+                                    )
                                     shown_standard_chart = True
                             if not shown_standard_chart:
                                 st.info("该科目暂无可绘制的标准扣分数据。")
@@ -1783,10 +1815,14 @@ if uploaded_files:
                         roles = sorted(filtered_pilots["技术等级"].dropna().astype(str).unique().tolist())
                         fig = fig_subject_role_loss(subject_deductions, subject_no, subject_all_items, roles)
                         if fig:
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(
+                                fig,
+                                use_container_width=True,
+                                key=f"subject_role_loss_{subject_no}",
+                            )
 
                     with inner_tab3:
-                        for company in sorted(filtered_pilots["所属单位"].dropna().astype(str).unique()):
+                        for company_idx, company in enumerate(sorted(filtered_pilots["所属单位"].dropna().astype(str).unique())):
                             company_data = subject_deductions[subject_deductions["所属单位"].astype(str) == company]
                             company_loss = aggregate_loss_by_item(
                                 company_data,
@@ -1796,7 +1832,11 @@ if uploaded_files:
                             )
                             fig = fig_loss_items_bar(company_loss, f"{company} - {subject_no} 总扣分值")
                             if fig:
-                                st.plotly_chart(fig, use_container_width=True)
+                                st.plotly_chart(
+                                    fig,
+                                    use_container_width=True,
+                                    key=f"company_subject_loss_{subject_no}_{company_idx}",
+                                )
 
                     with inner_tab4:
                         fig = fig_subject_risk_analysis(
@@ -1807,14 +1847,18 @@ if uploaded_files:
                             subject_all_items,
                         )
                         if fig:
-                            st.plotly_chart(fig, use_container_width=True)
+                            st.plotly_chart(
+                                fig,
+                                use_container_width=True,
+                                key=f"subject_risk_analysis_{subject_no}",
+                            )
                         else:
                             st.info("该科目暂无可绘制的风险值数据。")
 
             st.markdown("#### 综合考评得分分析")
             fig = fig_comprehensive_score_pie(filtered_deductions)
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="comprehensive_score_pie")
             else:
                 st.info("暂无综合考评数据。")
 
@@ -1846,12 +1890,16 @@ if uploaded_files:
         if not detail_pilots.empty:
             chart_col1, chart_col2 = st.columns(2)
             with chart_col1:
-                st.plotly_chart(fig_score_distribution(detail_pilots, "筛选范围得分分布"), use_container_width=True)
+                st.plotly_chart(
+                    fig_score_distribution(detail_pilots, "筛选范围得分分布"),
+                    use_container_width=True,
+                    key="detail_score_distribution",
+                )
             with chart_col2:
                 detail_top = identify_weak_areas(detail_deductions, ["扣分项"], denominator=max(len(detail_deductions), 1))
                 fig = fig_loss_items_bar(detail_top, "筛选范围扣分项 TOP 5", top_n=5)
                 if fig:
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, use_container_width=True, key="detail_top5_loss_items")
 
         display_cols = [
             "姓名",
