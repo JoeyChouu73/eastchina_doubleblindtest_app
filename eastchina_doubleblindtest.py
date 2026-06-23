@@ -62,15 +62,15 @@ B737_RISK_LINES = """
 大坡度盘旋_进入和改出滚转速率_较明显停顿粗猛发力_飞机操纵RE16
 大坡度盘旋_进入和改出滚转速率_明显停顿或粗猛发力_飞机操纵RE16
 大坡度盘旋_坡度保持_偏差持续3s以上_飞机操纵RE16
-大坡度盘旋_速度偏差_5-10KT（含）_飞机操纵RE16
-大坡度盘旋_速度偏差_＞10KT_飞机操纵RE16
-大坡度盘旋_改出航向偏差_5-10°（含）_横向偏离MAC02
+大坡度盘旋_速度偏差（偏差持续5秒，加倍）_5-10KT（含）_飞机操纵RE16
+大坡度盘旋_速度偏差（偏差持续5秒，加倍）_＞10KT_飞机操纵RE16
+大坡度盘旋_改出航向偏差_5°-10°（含）_横向偏离MAC02
 大坡度盘旋_改出航向偏差_＞±10°_横向偏离MAC02
-大坡度盘旋_高度偏差_±60-80ft（含）_飞行高度突破MAC03
-大坡度盘旋_高度偏差_±80-100ft（含）_飞行高度突破MAC03
-大坡度盘旋_高度偏差_±100ft以上_飞行高度突破MAC03
+大坡度盘旋_高度偏差（偏差持续5秒，加倍）_±60-80ft（含）_飞行高度突破MAC03
+大坡度盘旋_高度偏差（偏差持续5秒，加倍）_±80-100ft（含）_飞行高度突破MAC03
+大坡度盘旋_高度偏差（偏差持续5秒，加倍）_100ft以上_飞行高度突破MAC03
 大侧风目视起落_着陆_曲线控制_飞机操纵RE16
-大侧风目视起落_着陆_中心线不在两主轮之间_横向偏离RE20
+大侧风目视起落_着陆_中心线不在两个主轮之间_横向偏离RE20
 大侧风目视起落_着陆_目测每偏差500ft_飞机操纵RE16
 大侧风目视起落_着陆_偏流≥5°_飞机操纵RE16
 大侧风目视起落_着陆_接地前抽杆_飞机操纵RE16
@@ -80,14 +80,13 @@ B737_RISK_LINES = """
 大侧风目视起落_着陆_着陆弹跳_飞机操纵RE16
 大侧风目视起落_着陆_过早蹬舵（RA20ft以上）_飞机操纵RE16
 大侧风目视起落_着陆_明显过大的着陆载荷_飞机操纵RE16
-大侧风目视起落_下滑线_三红一白/三白一红_偏离下滑道下方CFIT04
-大侧风目视起落_下滑线_四白/四红_偏离下滑道下方CFIT04
-非精密进近+中断着陆_程序_单发推力控制_发动机故障LOC23
+大侧风目视起落_下滑线（≥5秒，加倍）_三红一白/三白一红_偏离下滑道下方CFIT04
+大侧风目视起落_下滑线（≥5秒，加倍）_四白/四红_偏离下滑道下方CFIT04
 非精密进近+中断着陆_SINK RATE_SINK RATE_进近阶段低能量状态/不稳定进近CFIT11
 非精密进近+中断着陆_BANK ANGLE/DON’T SINK_BANK ANGLE/DON’T SINK_飞机操纵RE16
 非精密进近+中断着陆_稳定进近_1000ft未稳定进近_不稳定进近RE26
-非精密进近+中断着陆_五边速度控制_±5-±10KT（含）_着陆时能量过高RE32
-非精密进近+中断着陆_五边速度控制_＞10KT_着陆时能量过高RE32
+非精密进近+中断着陆_五边速度控制（偏差持续5秒计分）_±5-±10KT（含）_着陆时能量过高RE32
+非精密进近+中断着陆_五边速度控制（偏差持续5秒计分）_＞10KT_着陆时能量过高RE32
 非精密进近+中断着陆_入口高度_相差每10ft_跑道入口处能量过高RE27
 非精密进近+中断着陆_横侧控制_100ft以下超出跑道边线（含）_横向偏离RE20
 非精密进近+中断着陆_中断程序_程序错误_复飞RE31
@@ -96,8 +95,8 @@ B737_RISK_LINES = """
 非精密进近+中断着陆_中断动作_接地载荷大_复飞RE31
 非精密进近+中断着陆_滑跑方向_不稳定_横向偏离RE20
 非精密进近+中断着陆_一边航迹_≥3°_横向偏离MAC02
-非精密进近+中断着陆_下滑线_三红一白/三白一红_偏离下滑道下方CFIT04
-非精密进近+中断着陆_下滑线_四白/四红_偏离下滑道下方CFIT04
+非精密进近+中断着陆_下滑线（≥5秒，加倍）_三红一白/三白一红_偏离下滑道下方CFIT04
+非精密进近+中断着陆_下滑线（≥5秒，加倍）_四白/四红_偏离下滑道下方CFIT04
 非精密进近+中断着陆_高距比_是否参考原始数据_错误下降点CFIT07
 中断着陆后发动机失效_航迹误差_±5°-±10°（含）_横向偏离MAC02
 中断着陆后发动机失效_航迹误差_＞±10°_横向偏离MAC02
@@ -111,10 +110,10 @@ B737_RISK_LINES = """
 单发ILS无指引落地_SINK RATE_SINK RATE_进近阶段低能量状态/不稳定进近CFIT11
 单发ILS无指引落地_速度控制_Vapp：±5-±10KT（含）_着陆时能量过高RE32
 单发ILS无指引落地_速度控制_Vapp：＞±10KT_着陆时能量过高RE32
-单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_G/S 每半个点_不稳定进近RE26
-单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_LOC 每半个点_不稳定进近RE26
-单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_100ft以下超出跑道边线（含）_横向偏离RE20
-单发ILS无指引落地_1000ft/1100ft/1002ft/1003ft以下五边剖面控制_1000ft未稳定进近_不稳定进近RE26
+单发ILS无指引落地_1000ft以下五边剖面控制_G/S 每半个点_不稳定进近RE26
+单发ILS无指引落地_1000ft以下五边剖面控制_LOC 每半个点_不稳定进近RE26
+单发ILS无指引落地_1000ft以下五边剖面控制_100ft以下超出跑道边线（含）_横向偏离RE20
+单发ILS无指引落地_1000ft以下五边剖面控制_1000ft未稳定进近_不稳定进近RE26
 单发ILS无指引落地_着陆_曲线控制_飞机操纵RE16
 单发ILS无指引落地_着陆_中心线不在两个主轮之间_横向偏离RE20
 单发ILS无指引落地_着陆_目测每偏差500ft_飞机操纵RE16
@@ -174,36 +173,120 @@ def key_text(value):
     return re.sub(r"\s+", "", compact_text(value))
 
 
+def normalize_risk_text(value):
+    text = compact_text(value)
+    text = re.sub(r"\s+([A-Za-z]{2,}\d+)", r"\1", text)
+    return text
+
+
+def normalize_match_text(value):
+    """用于风险清单匹配的标准化文本：去空格、统一全半角符号。"""
+    text = key_text(value)
+    replacements = {
+        "﹥": "＞",
+        ">": "＞",
+        "<": "＜",
+        "−": "-",
+        "–": "-",
+        "—": "-",
+        "～": "-",
+        "~": "-",
+        "﹣": "-",
+        "＋": "+",
+        "／": "/",
+        "，": ",",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
+
+
+def strip_parenthetical_text(value):
+    text = normalize_match_text(value)
+    text = re.sub(r"（[^）]*）", "", text)
+    text = re.sub(r"\([^)]*\)", "", text)
+    return text
+
+
+def item_key_variants(value):
+    base = normalize_match_text(value)
+    stripped = strip_parenthetical_text(value)
+    variants = [base, stripped]
+    return [v for i, v in enumerate(variants) if v and v not in variants[:i]]
+
+
+def standard_key_variants(value):
+    base = normalize_match_text(value)
+    variants = [base]
+    if "以上" in base and not base.startswith("±") and re.match(r"^\d", base):
+        variants.append("±" + base)
+    if base.startswith("±") and "以上" in base:
+        variants.append(base[1:])
+    return [v for i, v in enumerate(variants) if v and v not in variants[:i]]
+
+
 def build_b737_risk_maps():
-    subject_to_no = {name: no for no, name in SUBJECT_DEFS}
+    """按手工核对后的风险对应清单建立精确映射。
+    只保留清单中明确存在的“科目名称_评分项目_扣分标准_对应风险”关系；
+    匹配时允许空格、全半角符号和括号说明存在差异，但展示文本始终使用清单文本。
+    """
+    subject_name_to_no = {normalize_match_text(name): no for no, name in SUBJECT_DEFS}
+    subject_no_to_name = {no: name for no, name in SUBJECT_DEFS}
     exact_map = {}
-    item_map = {}
+
     for line in B737_RISK_LINES:
-        parts = line.split("_")
+        parts = [compact_text(part) for part in line.split("_")]
         if len(parts) < 4:
             continue
         subject_name, scoring_item, standard = parts[:3]
-        risk = "_".join(parts[3:])
-        subject_no = subject_to_no.get(subject_name, subject_name)
-        exact_map[(subject_no, key_text(scoring_item), key_text(standard))] = risk
-        item_map.setdefault((subject_no, key_text(scoring_item)), risk)
-    return exact_map, item_map
+        risk = normalize_risk_text("_".join(parts[3:]))
+        subject_no = subject_name_to_no.get(normalize_match_text(subject_name), subject_name)
+
+        subject_keys = {
+            normalize_match_text(subject_name),
+            normalize_match_text(subject_no),
+            normalize_match_text(subject_no_to_name.get(subject_no, "")),
+        }
+        item_keys = item_key_variants(scoring_item)
+        standard_keys = standard_key_variants(standard)
+        info = {
+            "评分项目": compact_text(scoring_item),
+            "扣分标准": compact_text(standard),
+            "对应风险": risk,
+            "风险标签": f"{compact_text(scoring_item)}_{compact_text(standard)}_{risk}",
+        }
+
+        for subject_key in subject_keys:
+            if not subject_key:
+                continue
+            for item_key in item_keys:
+                for standard_key in standard_keys:
+                    exact_map[(subject_key, item_key, standard_key)] = info
+
+    return exact_map
 
 
-B737_RISK_STANDARD_MAP, B737_RISK_ITEM_MAP = build_b737_risk_maps()
+B737_RISK_STANDARD_MAP = build_b737_risk_maps()
+
+
+def risk_info_for_standard(subject_no, scoring_item, standard):
+    """返回清单中的精确风险信息；清单中没有的扣分标准返回空信息。"""
+    subject_no = compact_text(subject_no)
+    subject_name = dict(SUBJECT_DEFS).get(subject_no, subject_no)
+    subject_keys = [normalize_match_text(subject_no), normalize_match_text(subject_name)]
+
+    for subject_key in subject_keys:
+        for item_key in item_key_variants(scoring_item):
+            for standard_key in standard_key_variants(standard):
+                info = B737_RISK_STANDARD_MAP.get((subject_key, item_key, standard_key))
+                if info:
+                    return info
+
+    return {"评分项目": "", "扣分标准": "", "对应风险": "", "风险标签": ""}
 
 
 def risk_name_for_standard(subject_no, scoring_item, standard, fallback=""):
-    subject_no = compact_text(subject_no)
-    item_key = key_text(scoring_item)
-    standard_key = key_text(standard)
-    return (
-        B737_RISK_STANDARD_MAP.get((subject_no, item_key, standard_key))
-        or B737_RISK_ITEM_MAP.get((subject_no, item_key))
-        or fallback
-        or ""
-    )
-
+    return risk_info_for_standard(subject_no, scoring_item, standard).get("对应风险", "")
 
 def to_number(value):
     if value is None or value == "":
@@ -238,12 +321,58 @@ def normalize_role(value):
     return "机长"
 
 
+def clean_unit_text(value):
+    text = compact_text(value)
+    if not text:
+        return ""
+    text = re.sub(r"^.*?所属\s*单位[:：]?", "", text).strip()
+    text = re.sub(r"^[：:;；,，。\s_-]+|[：:;；,，。\s_-]+$", "", text)
+    return compact_text(text)
+
+
+def is_valid_unit_text(value):
+    text = clean_unit_text(value)
+    if len(text) < 2:
+        return False
+    bad_words = ["所属单位", "单位", "姓名", "序号", "日期", "技术等级", "职务", "检查员", "得分", "总得分"]
+    if any(key_text(word) == key_text(text) or key_text(word) in key_text(text) for word in bad_words):
+        return False
+    if re.fullmatch(r"[A-Za-z0-9._-]+", text):
+        return False
+    return True
+
+
+def extract_unit_from_worksheet(ws):
+    """优先从表头区域的“所属单位”标题或其相邻单元格提取单位/机型名称。"""
+    max_row = min(ws.max_row, 12)
+    max_col = min(ws.max_column, 12)
+    for row_idx in range(1, max_row + 1):
+        for col_idx in range(1, max_col + 1):
+            cell_text = compact_text(ws.cell(row_idx, col_idx).value)
+            if not cell_text:
+                continue
+            if "所属" in key_text(cell_text) and "单位" in key_text(cell_text):
+                inline = clean_unit_text(cell_text)
+                if is_valid_unit_text(inline):
+                    return inline
+                candidates = []
+                for offset in range(1, 5):
+                    if col_idx + offset <= ws.max_column:
+                        candidates.append(ws.cell(row_idx, col_idx + offset).value)
+                for offset in range(1, 4):
+                    if row_idx + offset <= ws.max_row:
+                        candidates.append(ws.cell(row_idx + offset, col_idx).value)
+                for candidate in candidates:
+                    candidate = clean_unit_text(candidate)
+                    if is_valid_unit_text(candidate):
+                        return candidate
+    return ""
+
+
 def useful_company_from_filename(file_name):
     stem = Path(file_name).stem
     text = re.sub(r"[（）()【】\[\]]", "_", stem)
     text = re.sub(r"\d{4}[.-]?\d{0,2}[.-]?\d{0,2}", "_", text)
-    text = re.sub(r"\b(?:A|B|C|ARJ|C919|C909)\s*\d{2,4}[A-Z]?\b", "_", text, flags=re.I)
-    text = re.sub(r"(?:B737|A320|C909|C919|ARJ21|ARJ|COMAC)", "_", text, flags=re.I)
 
     noise = [
         "华东飞行员双盲测试数据采集表",
@@ -261,17 +390,24 @@ def useful_company_from_filename(file_name):
     for word in noise:
         text = text.replace(word, "_")
 
+    model_pattern = r"(?:B?737|A?320|A?330|A?350|C909|C919|ARJ21|ARJ)"
+    matches = re.findall(rf"[\u4e00-\u9fff]{{2,}}\s*{model_pattern}", text, flags=re.I)
+    if matches:
+        return re.sub(r"\s+", "", clean_unit_text(matches[-1]))
+
+    text = re.sub(rf"\b(?:A|B|C|ARJ|C919|C909)\s*\d{{2,4}}[A-Z]?\b", "_", text, flags=re.I)
+    text = re.sub(r"(?:B737|A320|C909|C919|ARJ21|ARJ|COMAC)", "_", text, flags=re.I)
+
     candidates = [c.strip("_- 　") for c in re.split(r"[_\s\-]+", text) if c.strip("_- 　")]
     cleaned = []
     for item in candidates:
         item = re.sub(r"(?:机型|航班|版本|模板|汇总)$", "", item)
-        if len(item) >= 2 and not re.fullmatch(r"[A-Za-z0-9.]+", item):
-            cleaned.append(item)
+        if is_valid_unit_text(item):
+            cleaned.append(clean_unit_text(item))
 
     if cleaned:
         return cleaned[-1]
     return stem
-
 
 def first_existing_column(df, names):
     lookup = {key_text(col): col for col in df.columns}
@@ -382,7 +518,8 @@ def load_template(file_bytes, file_name):
 
         records = []
         last_values = {col: "" for col in fill_down_cols}
-        source_unit = useful_company_from_filename(file_name)
+        title_unit = extract_unit_from_worksheet(ws)
+        source_unit = title_unit or useful_company_from_filename(file_name)
 
         for row_idx in range(4, ws.max_row + 1):
             row = {}
@@ -417,9 +554,9 @@ def load_template(file_bytes, file_name):
 
         unit_col = first_existing_column(df, ["所属单位", "单位"])
         if unit_col and unit_col in df.columns:
-            internal_unit = df[unit_col].dropna().astype(str).map(compact_text)
-            internal_unit = internal_unit[internal_unit != ""]
-            if source_unit == Path(file_name).stem and not internal_unit.empty:
+            internal_unit = df[unit_col].dropna().astype(str).map(clean_unit_text)
+            internal_unit = internal_unit[internal_unit.map(is_valid_unit_text)]
+            if not internal_unit.empty:
                 source_unit = internal_unit.mode().iloc[0]
         df["所属单位"] = source_unit
 
@@ -675,14 +812,27 @@ def identify_weak_areas(deductions, group_cols=None, denominator=1):
 def company_stats(pilot_df):
     if pilot_df.empty:
         return pd.DataFrame()
+
+    def ge_company_avg_ratio(scores):
+        avg = scores.mean()
+        if len(scores) == 0 or pd.isna(avg):
+            return "0.0%"
+        return f"{(scores >= avg).mean() * 100:.1f}%"
+
     return (
         pilot_df.groupby("所属单位")["最终得分"]
-        .agg(人数="count", 平均分="mean", 最高分="max", 最低分="min", 标准差="std")
-        .round(2)
+        .agg(
+            人数="count",
+            平均分="mean",
+            最高分="max",
+            最低分="min",
+            标准差="std",
+            大于等于本单位平均分占比=ge_company_avg_ratio,
+        )
+        .round({"平均分": 2, "最高分": 2, "最低分": 2, "标准差": 2})
         .reset_index()
         .rename(columns={"所属单位": "单位名称"})
     )
-
 
 def company_test_counts(pilot_df):
     if pilot_df.empty:
@@ -732,6 +882,7 @@ def fig_score_distribution(df, title="测试人员平均得分分布"):
     
     # 添加参考线：平均分
     avg_score = df["最终得分"].mean()
+    ge_ratio = (df["最终得分"] >= avg_score).mean() * 100 if len(df) > 0 else 0
     fig.add_hline(
         y=avg_score, 
         line_dash="dash", 
@@ -751,6 +902,17 @@ def fig_score_distribution(df, title="测试人员平均得分分布"):
         bordercolor=AVERAGE_LINE_COLOR,
         borderwidth=1,
         font=dict(color="#333333", size=12),
+    )
+    fig.add_annotation(
+        x=0.5,
+        xref="paper",
+        y=1.05,
+        yref="paper",
+        text=f"大于等于平均分{avg_score:.2f}的测试人员占比{ge_ratio:.1f}%",
+        showarrow=False,
+        xanchor="center",
+        yanchor="bottom",
+        font=dict(color="#666666", size=12),
     )
     
     fig.update_traces(
@@ -772,11 +934,10 @@ def fig_score_distribution(df, title="测试人员平均得分分布"):
             range=[y_min, y_max],
             dtick=5
         ),
-        margin=dict(l=40, r=40, t=50, b=60)
+        margin=dict(l=40, r=40, t=80, b=60)
     )
     
     return fig
-
 
 def fig_score_distribution_by_role(df, role_type="机长", color_scale=None):
     """按角色（机长/副驾驶）显示分数分布"""
@@ -807,6 +968,7 @@ def fig_score_distribution_by_role(df, role_type="机长", color_scale=None):
     
     # 添加平均分参考线
     avg_score = role_df["最终得分"].mean()
+    ge_ratio = (role_df["最终得分"] >= avg_score).mean() * 100 if len(role_df) > 0 else 0
     fig.add_hline(
         y=avg_score,
         line_dash="dash",
@@ -826,6 +988,17 @@ def fig_score_distribution_by_role(df, role_type="机长", color_scale=None):
         bordercolor=AVERAGE_LINE_COLOR,
         borderwidth=1,
         font=dict(color="#333333", size=12),
+    )
+    fig.add_annotation(
+        x=0.5,
+        xref="paper",
+        y=1.05,
+        yref="paper",
+        text=f"大于等于平均分{avg_score:.2f}的{role_type}占比{ge_ratio:.1f}%",
+        showarrow=False,
+        xanchor="center",
+        yanchor="bottom",
+        font=dict(color="#666666", size=12),
     )
     
     fig.update_traces(
@@ -847,11 +1020,10 @@ def fig_score_distribution_by_role(df, role_type="机长", color_scale=None):
             range=[y_min, y_max],
             dtick=5
         ),
-        margin=dict(l=40, r=40, t=60, b=50)
+        margin=dict(l=40, r=40, t=90, b=50)
     )
     
     return fig
-
 
 def fig_participants_by_company(pilot_df):
     counts = (
@@ -978,6 +1150,7 @@ def fig_company_subject_loss(deductions, pilot_df):
     # 按科目编号排序（科目一到科目五）
     stats["科目排序"] = stats["科目编号"].map(SUBJECT_SORT_MAP)
     stats = stats.sort_values(["所属单位", "科目排序"])
+    company_order = stats["所属单位"].drop_duplicates().tolist()
     
     # 图例顺序：科目一到科目五；绘图顺序反转以保证水平分组从上到下显示为科目一到科目五。
     subject_order = [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]
@@ -995,19 +1168,46 @@ def fig_company_subject_loss(deductions, pilot_df):
         barmode="group",
         text=stats["人均失分"].map(lambda x: f"-{x:.1f}" if x != 0 else ""),
         title="各航司五个科目平均失分",
-        category_orders={"科目显示": plot_subject_order},
+        category_orders={"科目显示": plot_subject_order, "所属单位": company_order},
         color_discrete_sequence=[subject_color_map.get(name, "#828282") for name in plot_subject_order],
     )
     for trace in fig.data:
         trace.legendrank = subject_legend_rank.get(trace.name, 99)
-    fig.update_traces(textposition="outside")
+
+    company_avg = stats.groupby("所属单位", dropna=False)["人均失分"].mean().reindex(company_order)
+    for company_idx, (company, avg_loss) in enumerate(company_avg.items()):
+        fig.add_shape(
+            type="line",
+            x0=avg_loss,
+            x1=avg_loss,
+            y0=company_idx - 0.38,
+            y1=company_idx + 0.38,
+            xref="x",
+            yref="y",
+            line=dict(color=AVERAGE_LINE_COLOR, width=3, dash="dash"),
+        )
+    for company, avg_loss in company_avg.items():
+        fig.add_annotation(
+            x=avg_loss,
+            y=company,
+            xref="x",
+            yref="y",
+            text=f"-{avg_loss:.2f}",
+            showarrow=False,
+            xanchor="left",
+            xshift=8,
+            bgcolor="rgba(255,255,255,0.92)",
+            bordercolor=AVERAGE_LINE_COLOR,
+            borderwidth=1,
+            font=dict(color="#333333", size=12),
+        )
+    fig.update_traces(textposition="outside", selector=dict(type="bar"))
     fig.update_layout(
         height=figure_height(stats["所属单位"].nunique(), 430, 60),
         xaxis_title="人均失分",
         yaxis_title=""
     )
     return fig
-
 
 def subject_company_loss_stats(deductions, pilot_df):
     if deductions.empty or pilot_df.empty:
@@ -1035,6 +1235,7 @@ def fig_subject_company_comparison(deductions, pilot_df):
         return None
 
     subject_order = [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]
+    subject_avg = stats.groupby("科目显示", dropna=False)["人均失分"].mean().reindex(subject_order)
     fig = px.bar(
         stats,
         x="科目显示",
@@ -1046,16 +1247,39 @@ def fig_subject_company_comparison(deductions, pilot_df):
         category_orders={"科目显示": subject_order},
         color_discrete_sequence=DEFAULT_COLOR_SEQUENCE,
     )
+    for subject_idx, (subject, avg_loss) in enumerate(subject_avg.dropna().items()):
+        fig.add_shape(
+            type="line",
+            x0=subject_idx - 0.42,
+            x1=subject_idx + 0.42,
+            y0=avg_loss,
+            y1=avg_loss,
+            xref="x",
+            yref="y",
+            line=dict(color=AVERAGE_LINE_COLOR, width=2, dash="dash"),
+        )
+        fig.add_annotation(
+            x=subject,
+            y=avg_loss,
+            text=f"-{avg_loss:.2f}",
+            showarrow=False,
+            yanchor="bottom",
+            yshift=6,
+            bgcolor="rgba(255,255,255,0.92)",
+            bordercolor=AVERAGE_LINE_COLOR,
+            borderwidth=1,
+            font=dict(color="#333333", size=12),
+        )
     fig.update_traces(textposition="outside", cliponaxis=False)
+    y_max = max(stats["人均失分"].max(), subject_avg.max()) if not subject_avg.dropna().empty else stats["人均失分"].max()
     fig.update_layout(
         height=500,
         xaxis_title="科目",
         yaxis_title="人均扣分值",
-        yaxis=dict(tickprefix="-"),
+        yaxis=dict(tickprefix="-", range=[0, y_max * 1.18 if y_max > 0 else 1]),
         margin=dict(l=60, r=60, t=80, b=80),
     )
     return fig
-
 
 def build_subject_standard_company_stats(subject_deductions, pilot_df, all_items):
     if pilot_df.empty or all_items is None or all_items.empty:
@@ -1140,22 +1364,24 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
     max_weight = base_items["分数权重"].max()
     if not np.isfinite(max_weight) or max_weight <= 0:
         return None
-    base_items["对应风险"] = base_items.apply(
-        lambda row: risk_name_for_standard(
+
+    risk_info = base_items.apply(
+        lambda row: risk_info_for_standard(
             subject_no,
             row.get("评分项目", ""),
             row.get("扣分标准", ""),
-            row.get("扣分项", ""),
         ),
         axis=1,
     )
-    base_items["风险标签"] = (
-        base_items["评分项目"].astype(str)
-        + "_"
-        + base_items["扣分标准"].astype(str)
-        + "_"
-        + base_items["对应风险"].astype(str)
-    )
+    base_items["风险评分项目"] = risk_info.map(lambda info: info.get("评分项目", ""))
+    base_items["风险扣分标准"] = risk_info.map(lambda info: info.get("扣分标准", ""))
+    base_items["对应风险"] = risk_info.map(lambda info: info.get("对应风险", ""))
+    base_items["风险标签"] = risk_info.map(lambda info: info.get("风险标签", ""))
+
+    # 只展示风险对应清单中明确存在的扣分标准；没有对应风险的扣分项目不进入风险值图。
+    base_items = base_items[base_items["对应风险"].astype(str).map(compact_text) != ""].copy()
+    if base_items.empty:
+        return None
 
     company_eval_count = (
         pilot_df.groupby("所属单位", dropna=False)
@@ -1195,9 +1421,26 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
         / stats["评估数据数"]
     ).fillna(0)
 
+    # 同一“评分项目_扣分标准_对应风险”只保留一条展示标签，避免重复。
+    plot_stats = (
+        stats.groupby(["所属单位", "风险评分项目", "风险扣分标准", "对应风险", "风险标签"], dropna=False)
+        .agg(
+            列顺序=("列顺序", "min"),
+            计分次数=("计分次数", "sum"),
+            评估数据数=("评估数据数", "sum"),
+            风险值=("风险值", "sum"),
+        )
+        .reset_index()
+    )
+
     risk_avg = (
-        stats.groupby([join_key, "扣分项", "评分项目", "扣分标准", "对应风险", "风险标签", "列顺序", "分数权重"], dropna=False)
-        .agg(计分次数=("计分次数", "sum"), 评估数据数=("评估数据数", "sum"))
+        stats.groupby(["风险评分项目", "风险扣分标准", "对应风险", "风险标签"], dropna=False)
+        .agg(
+            列顺序=("列顺序", "min"),
+            计分次数=("计分次数", "sum"),
+            评估数据数=("评估数据数", "sum"),
+            分数权重=("分数权重", "max"),
+        )
         .reset_index()
     )
     risk_avg["风险值"] = (
@@ -1207,17 +1450,23 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
         / risk_avg["评估数据数"].replace(0, np.nan)
     ).fillna(0)
     risk_avg["所属单位"] = "平权风险值"
+
     plot_data = pd.concat(
         [
-            stats[["所属单位", "扣分项", "评分项目", "扣分标准", "对应风险", "风险标签", "列顺序", "计分次数", "评估数据数", "风险值"]],
-            risk_avg[["所属单位", "扣分项", "评分项目", "扣分标准", "对应风险", "风险标签", "列顺序", "计分次数", "评估数据数", "风险值"]],
+            plot_stats[["所属单位", "风险评分项目", "风险扣分标准", "对应风险", "风险标签", "列顺序", "计分次数", "评估数据数", "风险值"]],
+            risk_avg[["所属单位", "风险评分项目", "风险扣分标准", "对应风险", "风险标签", "列顺序", "计分次数", "评估数据数", "风险值"]],
         ],
         ignore_index=True,
     )
     if plot_data["风险值"].sum() <= 0:
         return None
 
-    label_order = base_items.sort_values("列顺序")["风险标签"].tolist()
+    label_order = (
+        base_items[["风险标签", "列顺序"]]
+        .drop_duplicates("风险标签")
+        .sort_values("列顺序")["风险标签"]
+        .tolist()
+    )
     color_sequence = DEFAULT_COLOR_SEQUENCE + ["#1F7A3A"]
     fig = px.bar(
         plot_data,
@@ -1230,7 +1479,7 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
         category_orders={"风险标签": label_order},
         color_discrete_sequence=color_sequence,
         color_discrete_map={"平权风险值": "#1F7A3A"},
-        custom_data=["评分项目", "扣分标准", "对应风险", "计分次数", "评估数据数"],
+        custom_data=["风险评分项目", "风险扣分标准", "对应风险", "计分次数", "评估数据数"],
     )
     for trace in fig.data:
         if trace.name == "平权风险值":
@@ -1340,7 +1589,7 @@ def fig_subject_top3(deductions):
     top3["总扣分值"] = negative_deduction_values(top3["总失分"])
     top3["图表标签"] = top3["扣分项"]
     top3["排序值"] = top3["总扣分值"].abs()
-    plot_data = top3.sort_values(["科目排序", "排序值"], ascending=[True, True])
+    plot_data = top3.sort_values(["科目排序", "排序值"], ascending=[True, False])
     
     # 使用科目颜色
     subject_order = [f"{no}_{name}" for no, name in SUBJECT_DEFS if no in FLIGHT_SUBJECTS]
