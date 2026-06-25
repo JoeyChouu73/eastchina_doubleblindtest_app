@@ -29,6 +29,45 @@ except Exception:
 
 st.set_page_config(page_title="飞行员双盲测试评估分析（波音、C909、C919）", layout="wide")
 
+CHART_FONT_COLOR = "#000000"
+CHART_BASE_FONT_SIZE = 16
+CHART_TITLE_FONT_SIZE = 24
+CHART_AXIS_TITLE_FONT_SIZE = 18
+
+
+def apply_readable_chart_fonts(fig):
+    if fig is None:
+        return fig
+    fig.update_layout(
+        font=dict(color=CHART_FONT_COLOR, size=CHART_BASE_FONT_SIZE),
+        title_font=dict(color=CHART_FONT_COLOR, size=CHART_TITLE_FONT_SIZE),
+        legend=dict(font=dict(color=CHART_FONT_COLOR, size=CHART_BASE_FONT_SIZE)),
+    )
+    fig.update_xaxes(
+        title_font=dict(color=CHART_FONT_COLOR, size=CHART_AXIS_TITLE_FONT_SIZE),
+        tickfont=dict(color=CHART_FONT_COLOR, size=CHART_BASE_FONT_SIZE),
+    )
+    fig.update_yaxes(
+        title_font=dict(color=CHART_FONT_COLOR, size=CHART_AXIS_TITLE_FONT_SIZE),
+        tickfont=dict(color=CHART_FONT_COLOR, size=CHART_BASE_FONT_SIZE),
+    )
+    fig.update_annotations(font=dict(color=CHART_FONT_COLOR, size=CHART_BASE_FONT_SIZE))
+    try:
+        fig.update_traces(textfont=dict(color=CHART_FONT_COLOR, size=CHART_BASE_FONT_SIZE))
+    except ValueError:
+        pass
+    return fig
+
+
+_original_plotly_chart = st.plotly_chart
+
+
+def readable_plotly_chart(fig, *args, **kwargs):
+    return _original_plotly_chart(apply_readable_chart_fonts(fig), *args, **kwargs)
+
+
+st.plotly_chart = readable_plotly_chart
+
 
 META_KEYWORDS = [
     "序号",
@@ -1351,9 +1390,9 @@ def fig_subject_standard_company_loss(subject_deductions, pilot_df, all_items, s
     return fig
 
 
-def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_name, all_items):
+def build_subject_risk_plot_data(subject_deductions, pilot_df, subject_no, subject_name, all_items):
     if pilot_df.empty or all_items is None or all_items.empty:
-        return None
+        return pd.DataFrame(), pd.DataFrame()
 
     base_cols = ["扣分项", "评分项目", "扣分标准", "列顺序", "标准分值"]
     join_key = "模板列" if "模板列" in all_items.columns else "扣分项"
@@ -1363,7 +1402,7 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
     base_items["分数权重"] = pd.to_numeric(base_items["标准分值"], errors="coerce").abs().fillna(0)
     max_weight = base_items["分数权重"].max()
     if not np.isfinite(max_weight) or max_weight <= 0:
-        return None
+        return pd.DataFrame(), pd.DataFrame()
 
     risk_info = base_items.apply(
         lambda row: risk_info_for_standard(
@@ -1381,7 +1420,7 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
     # 只展示风险对应清单中明确存在的扣分标准；没有对应风险的扣分项目不进入风险值图。
     base_items = base_items[base_items["对应风险"].astype(str).map(compact_text) != ""].copy()
     if base_items.empty:
-        return None
+        return pd.DataFrame(), pd.DataFrame()
 
     company_eval_count = (
         pilot_df.groupby("所属单位", dropna=False)
@@ -1459,24 +1498,51 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
         ignore_index=True,
     )
     if plot_data["风险值"].sum() <= 0:
-        return None
+        return pd.DataFrame(), pd.DataFrame()
 
-    label_order = (
+    label_items = (
         base_items[["风险标签", "列顺序"]]
         .drop_duplicates("风险标签")
-        .sort_values("列顺序")["风险标签"]
-        .tolist()
+        .merge(
+            plot_data[["风险标签", "风险评分项目", "风险扣分标准", "对应风险"]].drop_duplicates("风险标签"),
+            on="风险标签",
+            how="left",
+        )
+        .sort_values("列顺序")
+        .reset_index(drop=True)
     )
+    plot_data["科目编号"] = subject_no
+    plot_data["科目名称"] = subject_name
+    return plot_data, label_items
+
+
+def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_name, all_items):
+    plot_data, label_items = build_subject_risk_plot_data(
+        subject_deductions,
+        pilot_df,
+        subject_no,
+        subject_name,
+        all_items,
+    )
+    if plot_data.empty:
+        return None
+
+    label_items["风险行"] = [f"风险项{i + 1:02d}" for i in range(len(label_items))]
+    label_to_row = dict(zip(label_items["风险标签"], label_items["风险行"]))
+    plot_data = plot_data.copy()
+    plot_data["风险行"] = plot_data["风险标签"].map(label_to_row)
+    risk_row_order = label_items["风险行"].tolist()
+
     color_sequence = DEFAULT_COLOR_SEQUENCE + ["#1F7A3A"]
     fig = px.bar(
         plot_data,
-        y="风险标签",
+        y="风险行",
         x="风险值",
         color="所属单位",
         orientation="h",
         barmode="group",
         title=f"{subject_name}风险值分布一览图",
-        category_orders={"风险标签": label_order},
+        category_orders={"风险行": risk_row_order},
         color_discrete_sequence=color_sequence,
         color_discrete_map={"平权风险值": "#1F7A3A"},
         custom_data=["风险评分项目", "风险扣分标准", "对应风险", "计分次数", "评估数据数"],
@@ -1495,14 +1561,123 @@ def fig_subject_risk_analysis(subject_deductions, pilot_df, subject_no, subject_
             "风险值: %{x:.4f}<extra></extra>"
         )
     )
+
+    def wrap_label(value, width=14):
+        value = compact_text(value)
+        if len(value) <= width:
+            return value
+        return "<br>".join([value[i:i + width] for i in range(0, len(value), width)])
+
+    last_item = None
+    for _, row in label_items.iterrows():
+        item = compact_text(row.get("风险评分项目", ""))
+        standard = compact_text(row.get("风险扣分标准", ""))
+        risk = compact_text(row.get("对应风险", ""))
+        show_item = item if item != last_item else ""
+        last_item = item
+
+        fig.add_annotation(
+            x=-0.54,
+            xref="paper",
+            y=row["风险行"],
+            yref="y",
+            text=wrap_label(show_item, 10),
+            showarrow=False,
+            xanchor="left",
+            yanchor="middle",
+            align="left",
+            font=dict(color="#000000", size=13),
+        )
+        fig.add_annotation(
+            x=-0.34,
+            xref="paper",
+            y=row["风险行"],
+            yref="y",
+            text=wrap_label(standard, 11),
+            showarrow=False,
+            xanchor="left",
+            yanchor="middle",
+            align="left",
+            font=dict(color="#000000", size=13),
+        )
+        fig.add_annotation(
+            x=-0.13,
+            xref="paper",
+            y=row["风险行"],
+            yref="y",
+            text=wrap_label(risk, 16),
+            showarrow=False,
+            xanchor="left",
+            yanchor="middle",
+            align="left",
+            font=dict(color="#000000", size=13),
+        )
+
     fig.update_layout(
-        height=figure_height(len(label_order), 520, 24, 1500),
-        margin=dict(l=360, r=60, t=80, b=50),
+        height=figure_height(len(label_items), 1080, 120, 4800),
+        margin=dict(l=640, r=80, t=95, b=90),
         xaxis_title="风险值",
         yaxis_title="",
-        yaxis=dict(tickfont=dict(color="#28A86B", size=11)),
+        bargap=0.04,
+        bargroupgap=0.08,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
+        yaxis=dict(
+            categoryorder="array",
+            categoryarray=risk_row_order,
+            autorange="reversed",
+            tickmode="array",
+            tickvals=risk_row_order,
+            ticktext=["" for _ in risk_row_order],
+            tickfont=dict(color="#000000", size=13),
+            automargin=True,
+        ),
     )
     return fig
+
+
+def build_all_subject_risk_export(filtered_deductions, filtered_pilots, all_meta):
+    risk_tables = []
+    for subject_no in FLIGHT_SUBJECTS:
+        subject_name = dict(SUBJECT_DEFS).get(subject_no, subject_no)
+        subject_deductions = filtered_deductions[filtered_deductions["科目编号"] == subject_no].copy()
+        subject_all_items = all_deduction_items(all_meta, subject_no)
+        plot_data, _ = build_subject_risk_plot_data(
+            subject_deductions,
+            filtered_pilots,
+            subject_no,
+            subject_name,
+            subject_all_items,
+        )
+        if plot_data.empty:
+            continue
+        export_df = plot_data[
+            [
+                "科目编号",
+                "科目名称",
+                "所属单位",
+                "风险评分项目",
+                "风险扣分标准",
+                "对应风险",
+                "计分次数",
+                "评估数据数",
+                "风险值",
+            ]
+        ].copy()
+        export_df["风险值"] = pd.to_numeric(export_df["风险值"], errors="coerce").round(6)
+        export_df = export_df.rename(columns={"风险评分项目": "评分项目", "风险扣分标准": "扣分标准"})
+        risk_tables.append(export_df)
+
+    if not risk_tables:
+        return None
+
+    export_all = pd.concat(risk_tables, ignore_index=True).sort_values(
+        ["科目编号", "评分项目", "扣分标准", "所属单位"]
+    )
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        export_all.to_excel(writer, index=False, sheet_name="五个科目风险值")
+    output.seek(0)
+    return output
 
 
 def fig_loss_items_bar(data, title, top_n=None, color=None):
@@ -2218,6 +2393,15 @@ if uploaded_files:
                 deductions.to_csv(index=False, encoding="utf-8-sig"),
                 f"检查员原始扣分明细_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv",
+            )
+
+        risk_export = build_all_subject_risk_export(filtered_deductions, filtered_pilots, all_meta)
+        if risk_export is not None:
+            st.download_button(
+                "下载五个科目风险值明细 Excel",
+                risk_export,
+                f"五个科目风险值明细_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
 
         st.markdown("---")
